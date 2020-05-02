@@ -1,5 +1,8 @@
 var express = require('express');
 var router = express.Router();
+var nodemailer=require('nodemailer');
+var config=require('../config');
+var transporter=nodemailer.createTransport(config.mailer);
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -27,7 +30,21 @@ router.route('/contact')
       errorMessages:errors
     });
   }else{
-res.render('thank',{ title:'Code4Share -a platform for sharing code.'});  
+var mailOptions = {
+  from:'Code4Share<no-reply@code4share.com>',
+  to:'sachin.singhww8@gmail.com',
+  subject:'You have got a new message from visitor',
+  text:req.body.message
+};
+transporter.sendMail(mailOptions,function(error,info){
+if(error){
+  return console.log(error); 
+}
+res.render('thank',{ title:'Code4Share -a platform for sharing code.'});
+});
+
+
+  
 }
 });
 
